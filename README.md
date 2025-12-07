@@ -5,13 +5,11 @@ A cybersecurity enthusiast and beginner CTF player. In this write-up, I'll walk 
 
 ![Room Banner](image.png)
 
-## Initial Reconnaissance
 
 First, I opened the web application:
 
 ![Homepage](Screenshot%202025-12-07%20154401.png)
 
-### Source Code Analysis
 
 I viewed the page source:
 
@@ -23,7 +21,6 @@ Found a username in the HTML comments:
 
 **Username:** `R1ckRul3s`
 
-### Directory Exploration
 
 I noticed a path named `/assets`:
 
@@ -31,7 +28,6 @@ I noticed a path named `/assets`:
 
 Nothing useful here - just images and scripts.
 
-### Robots.txt Discovery
 
 I tried opening `/robots.txt`:
 
@@ -41,7 +37,6 @@ Found an interesting string (possibly a password):
 
 **Wubbalubbadubdub**
 
-## Directory Fuzzing
 
 I used `ffuf` to enumerate directories:
 
@@ -73,7 +68,7 @@ Success! Gained access to a command panel:
 
 ![Command Panel](image-2.png)
 
-## Command Execution
+## Command 
 
 ### Listing Files
 
@@ -93,7 +88,7 @@ The `cat` command was disabled:
 
 **Solution:** Access files directly via URL
 
-### First Ingredient 🥒
+### First Ingredient 
 
 `http://10.82.168.227/Sup3rS3cretPickl3Ingred.txt`
 
@@ -157,7 +152,7 @@ Found `rick` directory!
 
 Found: **"second ingredients"** file
 
-### Second Ingredient 💧
+### Second Ingredient 
 
 Since `cat`, `head`, `tail`, and `more` were disabled, I tried `less`:
 
@@ -185,7 +180,7 @@ Only root has access!
 
 Found: `3rd.txt`
 
-### Third Ingredient 🧪
+### Third Ingredient
 
 ```bash
 less /root/3rd.txt
