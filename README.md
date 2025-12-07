@@ -1,201 +1,121 @@
 Hello folks, I’m Yousef Elnagar AKA (MrDurdenEG)
-# Pickle Rick CTF Write-up
+a cybersecurity enthusiast and beginner CTF player
+in this write-up I'll walk you through my journey solving the 'pickle rick' room
+explaining my thought process and how I got the final ingredients
 
-A cybersecurity enthusiast and beginner CTF player. In this write-up, I'll walk you through my journey solving the **Pickle Rick** room, explaining my thought process and how I got the final ingredients.
+![alt text](image.png)
 
-![Room Banner](image.png)
+first i open the web application and i got this
+![alt text](<Screenshot 2025-12-07 154401.png>)
 
+i viewed the source-page
+![alt text](<Screenshot 2025-12-07 154449.png>)
 
-First, I opened the web application:
+i got the username
+![alt text](<Screenshot 2025-12-07 154455.png>)
 
-![Homepage](Screenshot%202025-12-07%20154401.png)
+Username: R1ckRul3s
 
+i noticed that there a path named 'assets'
+![alt text](image-1.png)
+but i got nothing some images and scripts
 
-I viewed the page source:
+try to open '/robots.txt' path
+![alt text](<Screenshot 2025-12-07 155316.png>)
 
-![Source Page](Screenshot%202025-12-07%20154449.png)
+i got something not sure what's this but kept in my mind
 
-Found a username in the HTML comments:
+Wubbalubbadubdub
 
-![Username Found](Screenshot%202025-12-07%20154455.png)
+then i try to fuzzing the URL
 
-**Username:** `R1ckRul3s`
-
-
-I noticed a path named `/assets`:
-
-![Assets Directory](image-1.png)
-
-Nothing useful here - just images and scripts.
-
-
-I tried opening `/robots.txt`:
-
-![Robots.txt](Screenshot%202025-12-07%20155316.png)
-
-Found an interesting string (possibly a password):
-
-**Wubbalubbadubdub**
-
-
-I used `ffuf` to enumerate directories:
-
-```bash
 ffuf -u http://10.82.168.227/FUZZ -w /root/Desktop/Tools/wordlists/SecLists/Discovery/Web-Content/common.txt -e .php,.html,.txt -mc 200
-```
 
-- `-e .php,.html,.txt` : Find paths with these extensions
-- `-mc 200` : Filter paths with HTTP 200 status
+-e .php,.html,.txt : to find the paths with those extension
+-mc 200 : to filter the paths with response status = 200 (succeeded)
+![alt text](<Screenshot 2025-12-07 143812.png>)
 
-![Fuzzing Results](Screenshot%202025-12-07%20143812.png)
+got those files : index.html , login.php , robots.txt
 
-**Discovered files:**
-- `index.html`
-- `login.php`
-- `robots.txt`
+we already saw /robots.txt
 
-## Login Panel
+index.html is the main page
 
-Accessing `http://10.82.168.227/login.php` revealed a login page:
+when i access : http://10.82.168.227/login.php it shows this page
+![alt text](<Screenshot 2025-12-07 155355-1.png>)
 
-![Login Page](Screenshot%202025-12-07%20155355-1.png)
+i tried the username i got
+Username: R1ckRul3s
+password : Wubbalubbadubdub
+this password worked
 
-Tried the credentials:
-- **Username:** `R1ckRul3s`
-- **Password:** `Wubbalubbadubdub`
+![alt text](image-2.png)
 
-Success! Gained access to a command panel:
+command panel
 
-![Command Panel](image-2.png)
+i tried some commands
 
-## Command 
+ls -la
+![alt text](image-3.png)
 
-### Listing Files
+got some interesting files
 
-I ran `ls -la`:
+Sup3rS3cretPickl3Ingred.txt
+clue.txt
 
-![Directory Listing](image-3.png)
+when i try to 'cat' those files and it was disabled
+![alt text](<Screenshot 2025-12-07 155510.png>)
 
-**Interesting files found:**
-- `Sup3rS3cretPickl3Ingred.txt`
-- `clue.txt`
+i accessed the files by put it as a path
+http://10.82.168.227/Sup3rS3cretPickl3Ingred.txt
+![alt text](image-4.png)
+got first ingredient
 
-### Bypassing Command Restrictions
+http://10.82.168.227/clue.txt
+![alt text](image-5.png)
+nothing important
 
-The `cat` command was disabled:
+i showed the source-page i got something
+![alt text](image-6.png)
 
-![Cat Disabled](Screenshot%202025-12-07%20155510.png)
-
-**Solution:** Access files directly via URL
-
-### First Ingredient 
-
-`http://10.82.168.227/Sup3rS3cretPickl3Ingred.txt`
-
-![First Ingredient](image-4.png)
-
-**First Ingredient Found!**
-
-### Clue File
-
-`http://10.82.168.227/clue.txt`
-
-![Clue](image-5.png)
-
-Nothing particularly useful.
-
-### Base64 Rabbit Hole
-
-Found a Base64 string in the page source:
-
-![Source Comment](image-6.png)
-
-```html
 <!-- Vm1wR1UxTnRWa2RUV0d4VFlrZFNjRlV3V2t0alJsWnlWbXQwVkUxV1duaFZNakExVkcxS1NHVkliRmhoTVhCb1ZsWmFWMVpWTVVWaGVqQT0== -->
-```
 
-After decoding 6 times:
+base64 decode
+i decoded this string 6 times
+![alt text](<Screenshot 2025-12-07 144505.png>)
+finally i got something : rabbit hole
+i can't use it anywhere
 
-![Decode Result](Screenshot%202025-12-07%20144505.png)
+so i keep use command panel
 
-Result: **"rabbit hole"** - A dead end!
+i try to show working dir 'pwd'
+![alt text](image-7.png)
 
-## System Exploration
+i got back to the root dir 'cd /../../ && ls -la' to list the dir
+![alt text](image-8.png)
 
-### Current Directory
+important directories (home, root)
+lets see 'cd /home && ls -la'
+![alt text](image-9.png)
 
-Checked working directory with `pwd`:
+rick dir lets go through it 'cd /home/rick && ls -la'
+![alt text](image-10.png)
+second ingredients hhhmmmmmmmm
+but i cant use 'cat'
+i try (cat,head ,tail,more) but all were disabled
+but 'less' workeddd
 
-![PWD](image-7.png)
-
-### Root Directory
-
-Navigated to root and listed contents: `cd /../../ && ls -la`
-
-![Root Directory](image-8.png)
-
-**Important directories:** `/home`, `/root`
-
-### Home Directory
-
-Explored home: `cd /home && ls -la`
-
-![Home Directory](image-9.png)
-
-Found `rick` directory!
-
-### Rick's Directory
-
-`cd /home/rick && ls -la`
-
-![Rick's Directory](image-10.png)
-
-Found: **"second ingredients"** file
-
-### Second Ingredient 
-
-Since `cat`, `head`, `tail`, and `more` were disabled, I tried `less`:
-
-```bash
 less '/home/rick/second ingredients'
-```
+![alt text](image-11.png)
 
-![Second Ingredient](image-11.png)
+got the second ingredient : 1 jerry tear
 
-**Second Ingredient:** `1 jerry tear`
-
-## Root Directory Access
-
-### Permission Issues
-
-Tried listing `/root` but noticed permissions: `drwx------ 4 root root`
-
-Only root has access!
-
-### Using Sudo
-
-`sudo ls -la /root`
-
-![Root Contents](image-12.png)
-
-Found: `3rd.txt`
-
-### Third Ingredient
-
-```bash
-less /root/3rd.txt
-```
-
-![Third Ingredient](image-13.png)
-
-**Third Ingredient:** `fleeb juice`
-
-## Summary
-
-**All Three Ingredients Collected:**
-1.  `mr. meeseek hair` (from `Sup3rS3cretPickl3Ingred.txt`)
-2.  `1 jerry tear` (from `/home/rick/second ingredients`)
-3.  `fleeb juice` (from `/root/3rd.txt`)
-
-
-
+lets now try the '/root' dir
+i tried to list the dir but i cant , i noticed "drwx------ 4 root root 4096 Jul 11 2024 root"
+the root is the only one who has permission lets try 'sudo'
+'sudo ls -la /root'
+![alt text](image-12.png)
+3rd.txt????? hhmmmm
+'less /root/3rd.txt'
+![alt text](image-13.png)
+3rd ingredients: fleeb juice
