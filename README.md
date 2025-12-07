@@ -1,3 +1,4 @@
+to show file formatted by copilot (only formatted) in the ##picklerick.md file 
 Hello folks, I’m Yousef Elnagar AKA (MrDurdenEG)
 a cybersecurity enthusiast and beginner CTF player
 in this write-up I'll walk you through my journey solving the 'pickle rick' room
